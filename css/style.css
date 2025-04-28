@@ -1,0 +1,396 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+/* I used root variables for the colors since there are a lot of changes that affect the whole page. Instead of listing individual hex codes everywhere, I set them up as variables to make it easier to update everything at once. Instead of having to do something like this:
+.dark-mode body,
+.dark-mode header,
+.dark-mode footer,
+.dark-mode main,
+.dark-mode nav,
+.dark-mode .site-header,
+.dark-mode .site-nav a,
+.dark-mode .person,
+.dark-mode .accessibility-bar button,
+.dark-mode .accessibility-options button {
+  background-color: #121212;
+  color: #ffffff;
+  border-color: #555555;
+}
+https://www.w3schools.com/cssref/sel_root.php
+https://www.w3schools.com/cssref/css_ref_pseudo_classes.php
+https://dev.to/ditarahma08/dark-mode-with-css-variable-1p57
+https://lukelowrey.com/css-variable-theme-switcher/
+https://pedromarquez.dev/blog/2022/7/dark-mode-css */
+:root {
+  --text: #000000;
+  --bg: #fff;
+  --button-bg: #ffffff;
+  --button-text: #000000;
+  --button-hover-bg: #f0f0f0;
+  --dropdown-bg: #ffffff;
+  --border-color: #cccccc;
+  --subtext: #555555;
+}
+
+
+body {
+  font-family: "Libre Baskerville", Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  background-color: var(--button-bg); /* to match the button background */
+  color: var(--button-text);
+}
+.skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+
+.site-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.site-title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.site-tagline {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 2rem;
+  letter-spacing: 0.02em;
+}
+
+
+.site-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.site-nav a {
+  font-family: "IBM Plex Mono", monospace;
+  text-decoration: none;
+  color: inherit;
+  text-transform: lowercase;
+  font-size: 1rem;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.site-nav a:hover,
+.site-nav a:focus {
+  opacity: 0.55;
+}
+
+
+.family-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.generation {
+  display: grid;
+  gap: 1rem;
+}
+
+.gen-1 { grid-template-columns: repeat(4, 1fr); }
+.gen-2 { grid-template-columns: repeat(2, 1fr); }
+.gen-3 { grid-template-columns: repeat(2, 1fr); }
+.gen-4 { grid-template-columns: repeat(2, 1fr); }
+
+
+.person {
+  aspect-ratio: 1 / 1;
+  border: 2px solid var(--text);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: "IBM Plex Mono", monospace;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: var(--bg);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  position: relative;
+}
+
+.person .name {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.person .dates {
+  font-size: 0.75rem;
+  color: var(--subtext);
+  line-height: 1.2;
+}
+
+
+.person:hover {
+  background-color: var(--button-hover-bg);
+}
+
+/* .person.open {
+  position: fixed;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  background-color: var(--bg);
+  z-index: 1000;
+  overflow: auto;
+  padding: 2rem;
+  border: 4px solid var(--text);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.5s ease;
+} */
+.person.open {
+  position: fixed;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  background-color: var(--bg);
+  padding: 2rem;
+  border: 4px solid var(--text);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  overflow: auto;
+  z-index: 1000;
+  transition: all 0.5s ease;
+}
+.exit-button {
+  display: none;
+}
+
+.person.open .exit-button {
+  display: block;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 2000;
+}
+
+.person-info {
+  display: none;
+}
+
+.person-info img {
+  width: 100%;
+  max-width: 300px; 
+  height: auto;
+  object-fit: cover;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 10px; 
+}
+
+/* The following code is so that the infor only  shows  when card is open */
+.person.open .person-info {
+  display: block;
+  margin-top: 1rem;
+}
+
+.exit-button:hover,
+.exit-button:focus {
+  color: green;
+}
+
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Accessibility Button Style*/
+.accessibility-bar {
+  position: relative;
+  display: inline-block;
+}
+
+#accessibility-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+}
+
+.accessibility-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  padding: 0;
+  list-style: none;
+  background: var(--dropdown-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  z-index: 1000;
+}
+
+.accessibility-options li {
+  border-bottom: 1px solid #eee;
+}
+
+.accessibility-options li:last-child {
+  border-bottom: none;
+}
+
+.accessibility-options button {
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.accessibility-options button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+
+.family-cornelius {
+  border-color: #4A90E2; /* Blue */
+}
+
+.family-tina {
+  border-color: #7ED321; /* Green */
+}
+
+.family-louis {
+  border-color: #50E3C2; /* Teal = Green + Blue */
+}
+
+.family-klaas {
+  border-color: #9013FE; /* Purple */
+}
+
+.family-tillie {
+  border-color: #F5A623; /* Orange */
+}
+
+.family-elizabeth {
+  border-color: #D96BA7; /* Magenta = Purple + Orange */
+}
+
+.family-grandchildren {
+  border-color: #A68FC1; /* Light purple = Magenta + Teal */
+}
+
+
+.dark-mode {
+  --text: #fff;
+  --bg: #121212;
+  --button-bg: #1f1f1f;
+  --button-text: #fff;
+  --button-hover-bg: #333;
+  --dropdown-bg: #1f1f1f;
+  --border-color: #444;
+  --subtext: #ccc;
+}
+
+
+.monochrome-mode {
+  --text: #000;
+  --bg: #fff;
+  --button-bg: #fff;
+  --button-text: #000;
+  --button-hover-bg: #ddd;
+  --dropdown-bg: #fff;
+  --border-color: #000;
+  filter: grayscale(100%);
+}
+
+.alt-text {
+  display: none;
+  font-size: 0.8rem;
+  color: var(--text);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.show-alt-text .alt-text {
+  display: block;
+}
+
+
+@media (min-width: 800px) {
+  .site-header {
+    padding: 2.5rem 2rem;
+  }
+
+  .site-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .site-tagline {
+    font-size: 1rem;
+  }
+
+  .site-nav ul {
+    flex-direction: row;
+    gap: 1.25rem;
+    justify-content: center;
+  }
+
+  .family-tree {
+    margin-top: 3rem;
+    gap: 2.5rem;
+  }
+
+  .gen-1 { grid-template-columns: repeat(8, 1fr); }
+  .gen-2 { grid-template-columns: repeat(4, 1fr); }
+  .gen-3 { grid-template-columns: repeat(2, 1fr); }
+  .gen-4 { grid-template-columns: repeat(3, 1fr); }
+
+  .person .name {
+    font-size: 1.2rem;
+  }
+
+  .person .dates {
+    font-size: 0.8rem;
+  }
+}
